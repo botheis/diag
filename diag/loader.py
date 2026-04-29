@@ -3,25 +3,28 @@ import os, sys
 
 import importlib.util
 
-import diag.utils as utils
+from diag.diagnosticManager import DiagnosticManager
 
-from diag.diagnosticManager import DiagnosticManager, Diagnostic
+def list_diagnostics():
+    """List all available loaded diagnostics."""
+    if len(DiagnosticManager().diagnostics) == 0:
+        print("No diagnostics available.")
+        return
 
-def load_diagnostics(path=""):
+    print("Available diagnostics:")
+    for name in DiagnosticManager().diagnostics.keys():
+        print(f" - {name}")
+
+
+def load_diagnostics():
+    """Load diagnostics from the diagnostic path. The diagnostic path is set by the --diag option. 
+    If not set, it will load all diagnostics in the diagnostic folder."""
+
     dm = DiagnosticManager()
 
-    if path == "":
-        print("first case : empty path")
-        path = os.path.join(utils.project_dir(), "diagnostic")
+    # Path exists
+    path = dm.get_path("diagnostic")
 
-    if os.path.exists(path) is False :
-        dm.logger.error(f"Diagnstic path '{path}' does not exist.")
-        return sys.exit(1)
-    if os.path.isdir(path) is False:
-        dm.logger.error(f"Diagnstic path '{path}' is not a directory.")
-        return sys.exit(1)
-
-    Diagnostic.manager = dm
     for root, dirs, files in os.walk(path):
         if root.endswith("__pycache__"):
             continue
@@ -41,10 +44,32 @@ def load_diagnostics(path=""):
             # Load the module
 
 def load_options():
+    """Load options for diagnostic stand alone mode."""
+
+    # Parser here
     parser = ArgumentParser(prog="Diagnostic", description="Help to diagnose issues based on your tests.")
     
-    parser.add_argument("--list", action="store_true", help="List all available diagnostics")
-    parser.add_argument("--run", type=str, nargs="?",help="Run a specific diagnostic by name. If the name is not found, it will run all diagnostics that start with that name.")
-    parser.add_argument("--diag", type=str, help="Specify the diagnostic path to load. If not specified, it will load all diagnostics in the diagnostic folder.")
-    parser.add_argument("--report", type=str, help="Specify the report path to save the report. If not specified, it will be saved in /var/log/diag.log.")
-    return parser
+    parser.add_argument("--list", action="store_true", help="List all available diagnostics. It takes account on loaded and selected diagnostics.")
+    parser.add_argument("--run", type=str, nargs="?",help="Select diagnostics by name and run it. If the name is not found, it will run all diagnostics that start with that name.")
+    parser.add_argument("--diag", type=str, help="Specify the diagnostic path (directory) to load. If not specified, it will load all diagnostics in the diagnostic folder.")
+    parser.add_argument("--report", type=str, help="Specify the report path (file) to save the report. If not specified, it will be saved in /var/log/diag.log.")
+
+    # Parser actions
+
+    # --diag opt handler
+    DiagnosticManager().set_path("diagnostic", parser.parse_args().diag, "strict")
+    load_diagnostics()
+
+    # --report opt handler
+    DiagnosticManager().set_path("report", parser.parse_args().report, "parent")
+    DiagnosticManager().logger.info("Report will be saved into %s"%(DiagnosticManager().get_path("report")))
+
+    # --list opt handler
+    if parser.parse_args().list:
+        list_diagnostics()
+        return sys.exit(0)
+
+    # --run opt handler
+    # If no run selected, run all diagnostics found.
+    name = parser.parse_args().run
+    DiagnosticManager().run(name)
