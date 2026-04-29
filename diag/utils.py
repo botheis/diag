@@ -1,6 +1,7 @@
 from configparser import ConfigParser
 import os, sys
 import psutil
+import subprocess
 
 def get_config(path, local=".local"):
     config = None
@@ -36,16 +37,12 @@ def is_admin():
 def service_running(name):
     if sys.platform == "linux":
         # Check if a service is running by looking for its PID file
-
-        pidfile = os.path.join("/","var", "run", f"{name}.pid")
-        pidsubfile = os.path.join("/","var", "run", name, f"{name}.pid")
-
-        if os.path.exists(pidfile):
+        cmd = "systemctl is-active --quiet {}".format(name)
+        result = subprocess.run(cmd, shell=True)
+        if result.returncode == 0:
             return True
-        elif os.path.exists(pidsubfile):
-            return True
-        else:
-            return False
+        return False
+
     elif sys.platform == "darwin":
         # Check if a service is running by looking for its launchd plist
         plistfile = f"/Library/LaunchDaemons/{name}.plist"
