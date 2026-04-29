@@ -1,7 +1,7 @@
 Dev Doc
 ===
 
-This document gives specifications for developers who want to add a new diagnostic to mmc_diag.
+This document gives specifications for developers who want to add a new diagnostic to diag.
 
 # Organization
 
@@ -24,8 +24,8 @@ Here is the minimal code to create a diagnostic:
 import configparser
 import os
 
-from mmc_diag.utils import *
-from mmc_diag.diagnosticManager import Diagnostic
+from diag.utils import *
+from diag.diagnosticManager import Diagnostic
 
 class ServiceRunningDiagnostic(Diagnostic):
     def __init__(self):
@@ -85,7 +85,7 @@ The DiagnosticManager is a singleton class that manages all registered diagnosti
 It means you can call several times DiagnosticManager() and you will always get the same instance.
 
 ```python
-from mmc_diag.diagnosticManager import DiagnosticManager
+from diag.diagnosticManager import DiagnosticManager
 dm = DiagnosticManager()
 dm2 = DiagnosticManager()
 
@@ -106,7 +106,7 @@ To get / set value in the manager storage, use the method `store(key="", value=N
 - key is not empty and value is not None: set the value of the key.
 
 ```python
-from mmc_diag.diagnosticManager import DiagnosticManager
+from diag.diagnosticManager import DiagnosticManager
 dm = DiagnosticManager()
 # Get the whole storage
 dm.store()
@@ -117,4 +117,3 @@ dm.store("my_key")
 # Associate the "my_value" value to the "my_key" key
 dm.store("my_key", "my_value")
 ```
-
