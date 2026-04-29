@@ -1,5 +1,5 @@
 import logging
-import os
+import os, sys
 import diag.utils as utils
 from datetime import datetime
 
@@ -96,7 +96,7 @@ class DiagnosticManager:
         """
         timing = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.push_report(timing, "Manager", level, content)
-        self.running = False
+        sys.exit(1)
 
     def get_path(self, name):
         """Get the path of a specific name.
@@ -162,6 +162,17 @@ class DiagnosticManager:
             Connector: The connector associated with the given name, or None if not found.
         """
         return self.connectors.get(name, None)
+
+    def set_connector(self, name, connector):
+        """Set a connector by name.
+
+        Args:
+            name (str): The name of the connector to set.
+            connector (Connector): The connector instance to associate with the given name.
+        """
+        if name is None or name == "" or connector is None:
+            return
+        self.connectors[name] = connector
 
 
     def get_diagnostic(self, name):
@@ -292,6 +303,14 @@ class DiagnosticManager:
                 f.write(f"{item['datetime']} - {name} - {item['level']} - {item['message']}\n")
             f.close()
 
+    def __del__(self):
+        """Destructor for the DiagnosticManager instance."""
+        for element in self.connectors.values():
+            try:
+                element.close()
+            except:
+                continue
+
 
 class Diagnostic:
 
@@ -300,6 +319,8 @@ class Diagnostic:
         """Initialize the Diagnostic instance."""
         self.logger = logger
         self.report = []
+        self.count = 0
+        self.dependencies = []
 
     def register(self, name):
         """Register the diagnostic instance into the manager under the given name.
