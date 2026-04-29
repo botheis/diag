@@ -330,6 +330,24 @@ class Diagnostic:
         """
         Diagnostic.manager.register(name, self)
 
+    @staticmethod
+    def run_dependencies(fnc):
+        """Decorator to run the dependencies of a diagnostic before executing the decorated function.
+
+        Args:
+            fnc (function): The function to decorate.
+
+        Returns:
+            function: The decorated function that runs the dependencies before executing the original function.
+        """
+        def wrapper(self, *args, **kwargs):
+            self.push_report("info", f"Running dependencies for {self.__class__.__name__}")
+            for name in self.dependencies:
+                self.manager.run(name)
+            return fnc(self, *args, **kwargs)
+        return wrapper
+
+    @run_dependencies
     def run(self):
         """Virtual method: override this method to implement the diagnostic logic."""
         pass
