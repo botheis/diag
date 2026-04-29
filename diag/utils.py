@@ -1,5 +1,6 @@
 from configparser import ConfigParser
-import os
+import os, sys
+import psutil
 
 def get_config(path, local=".local"):
     config = None
@@ -31,3 +32,35 @@ def user_dir():
 
 def is_admin():
     return os.geteuid() == 0
+
+def service_running(name):
+    if sys.platform == "linux":
+        # Check if a service is running by looking for its PID file
+
+        pidfile = os.path.join("/","var", "run", f"{name}.pid")
+        pidsubfile = os.path.join("/","var", "run", name, f"{name}.pid")
+
+        if os.path.exists(pidfile):
+            return True
+        elif os.path.exists(pidsubfile):
+            return True
+        else:
+            return False
+    elif sys.platform == "darwin":
+        # Check if a service is running by looking for its launchd plist
+        plistfile = f"/Library/LaunchDaemons/{name}.plist"
+        return os.path.exists(plistfile)
+    elif sys.platform == "win32":
+        # Check if a service is running using psutil
+        service = None
+        try:
+            service = psutil.win_service_get(name)
+            service = service.as_dict()
+        except:
+            return False
+        if service and service["status"] == "running":
+            return True
+        else:
+            return False
+    else:
+        return False
