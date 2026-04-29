@@ -10,7 +10,7 @@ class DiagnosticManager:
     connectors = {}
     diagnostics = {}
     store = {}
-    running = False
+    running = True
 
     paths = {
         "report": os.path.join(utils.user_dir(), "diag.log"),
@@ -313,11 +313,10 @@ class Diagnostic:
         """Virtual method: override this method to implement the diagnostic logic."""
         pass
 
-    def push_report(self, _datetime, level, message):
+    def push_report(self, level, message):
         """Push a report entry into the diagnostic's report list.
 
         Args:
-            _datetime (str): The datetime of the report entry.
             level (str): The level of the report entry (e.g., "info", "warning", "error").
             message (str): The message of the report entry.
 
@@ -325,6 +324,7 @@ class Diagnostic:
             The reports are stored in the diagnostic, but not written directly by him.
             The manager is responsible for writing the report into the file.
         """
+        _datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.report.append({
             "datetime": _datetime,
             "level": level,
