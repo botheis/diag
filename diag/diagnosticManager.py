@@ -9,7 +9,7 @@ class DiagnosticManager:
     instance = None
     connectors = {}
     diagnostics = {}
-    store = {}
+    _store = {}
     running = True
 
     paths = {
@@ -242,11 +242,11 @@ class DiagnosticManager:
             any: The value associated with the key if retrieving, or the entire store if no key is provided.
         """
         if key == "":
-            return self.store
+            return self._store
 
         if value is None:
-            return self.store.get(key, None)
-        self.store[key] = value
+            return self._store.get(key, None)
+        self._store[key] = value
 
     def unstore(self, key):
         """Remove a key-value pair from the internal store.
@@ -254,8 +254,8 @@ class DiagnosticManager:
         Args:
             key (str): The key to remove from the store.
         """
-        if key in self.store:
-            del self.store[key]
+        if key in self._store:
+            del self._store[key]
 
     def reset_report(self):
         """Reset the report file by clearing its contents. The file is opened and closed in this method."""

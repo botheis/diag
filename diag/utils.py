@@ -21,8 +21,10 @@ def get_config(path, local=".local"):
 
         for section in localconfig.sections():
             for option in localconfig.options(section):
-                config.set(section, option, localconfig.get(section, option))
-    
+                try:
+                    config.set(section, option, localconfig.get(section, option))
+                except:
+                    config.set(section, option, "")
     return config
 
 def project_dir():
