@@ -12,6 +12,7 @@ class DiagnosticManager:
     _store = {}
     running = True
 
+    reports = []
     paths = {
         "report": os.path.join(utils.user_dir(), "diag.log"),
         "diagnostic": os.path.join(utils.project_dir(), "diagnostic"),
@@ -299,7 +300,7 @@ class DiagnosticManager:
         """
         # Save the diagnostic report into the report path
         with open(self.get_path("report"), "a") as f:
-            for item in diagnostic.report:
+            for item in self.reports:
                 f.write(f"{item['datetime']} - {name} - {item['level']} - {item['message']}\n")
             f.close()
 
@@ -341,7 +342,7 @@ class Diagnostic:
             function: The decorated function that runs the dependencies before executing the original function.
         """
         def wrapper(self, *args, **kwargs):
-            self.push_report("info", f"Running dependencies for {self.__class__.__name__}")
+            # self.push_report("info", f"Running dependencies for {self.__class__.__name__}")
             for name in self.dependencies:
                 self.manager.run(name)
             return fnc(self, *args, **kwargs)
@@ -364,7 +365,7 @@ class Diagnostic:
             The manager is responsible for writing the report into the file.
         """
         _datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        self.report.append({
+        self.manager.reports.append({
             "datetime": _datetime,
             "level": level,
             "message": message
