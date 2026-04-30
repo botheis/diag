@@ -57,3 +57,14 @@ def service_running(name):
             return False
     else:
         return False
+
+def run_ssh_command(host, command, user=None):
+    # Construct the SSH target string (user@host)
+    target = f"{user}@{host}" if user else host
+
+    # Run the command and capture output
+    result = subprocess.run(["ssh", target, command], shell=False, capture_output=True, text=True, check=False)
+    if result.returncode == 0:
+        return result.stdout
+    else:
+        raise Exception(f"SSH Error: {result.stderr}")
