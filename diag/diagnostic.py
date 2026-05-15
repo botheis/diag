@@ -1,0 +1,49 @@
+from diag.errors import *
+
+import logging
+
+
+class Diagnostic:
+    manager = None
+    log_levels = ["debug", "info", "warning", "error", "fatal"]
+
+    @staticmethod
+    def set_manager(manager):
+        Diagnostic.manager = manager
+
+    def __init__(self):
+        """Initialize the Diagnostic instance."""
+        self.count = 0
+        self.dependencies = []
+        self.register_name = "Manager"
+
+    def register(self, name):
+        """Register the diagnostic instance into the manager under the given name.
+
+        Args:
+            name (str): The name to register the diagnostic.
+        """
+        self.register_name = name
+        self.manager.register(name, self)
+
+    def run(self):
+        """Virtual method: override this method to implement the diagnostic logic."""
+        pass
+
+    def log(self, level="info", message=""):
+        """Log a message to the report file with a specific format.
+
+        Args:
+            level (str): The severity level of the log message (e.g., "info", "warning", "error").
+            message (str): The content of the log message.
+        """
+        if self.manager is None:
+            raise DiagnosticError(DIAGNOSTIC_MANAGER_NOT_SET)
+
+        # Get the logging.getLogger.level method based on the level string
+        if hasattr(self.manager.logger, level):
+            logger = getattr(self.manager.logger, level)
+
+        if logger is None:
+            raise DiagnosticError(MANAGER_LOGGER_NOT_SET)
+        logger(f"{self.register_name} - {message}")
