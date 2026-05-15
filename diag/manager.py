@@ -114,6 +114,9 @@ class DiagnosticManager:
         if diagnostic is not None:
             # Find and launch deps before launch the main diagnostic
             for dep in diagnostic.dependencies:
+                # prevent from infinite loop if a diagnostic depends on itself
+                if diagnostic.register_name == dep:
+                    continue
                 self.run(dep)
 
             diagnostic.run()

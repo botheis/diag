@@ -196,7 +196,7 @@ class Diagonal:
                 self.logger.info("\t- " + element)
 
         # Do nothing more.
-        return 0
+        sys.exit(0)
 
     @executor
     def run(self, value=None):
@@ -211,7 +211,7 @@ class Diagonal:
                 self.logger.info("No diagnostics to run.")
             else:
                 for name in diagnostics:
-                    return self.manager.run(name)
+                    self.manager.run(name)
 
         # Second case : normal use: run diagnostics that start with the value
         else:
@@ -222,15 +222,15 @@ class Diagonal:
                 else:
                     for name in diagnostics:
                         if name.startswith(value):
-                            return self.manager.run(name)
+                            self.manager.run(name)
             # Third case: run specific diagnostic
             else:
                 value = value[1:]
                 if self.manager.has(value):
-                    return self.manager.run(value)
+                    self.manager.run(value)
                 else:
                     self.logger.info("No diagnostics to run.")
-            return 0
+        sys.exit(0)
 
     @executor
     def diag(self, value=None):
