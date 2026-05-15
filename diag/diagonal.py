@@ -200,6 +200,10 @@ class Diagonal:
 
     @executor
     def run(self, value=None):
+        """Select diagnostics by name and run it. If the name is not found, it will run all diagnostics that start with that name.
+        Args:
+            value (str, optional): The name of the diagnostic to run. If None or empty, it will run all diagnostics. If it starts with "^", it will run the specific diagnostic with the exact name (without the "^"). If it does not start with "^", it will run all diagnostics that start with the given name. Default is None."""
+
         # First case : no value : run all diagnostics
         if value is None or value == "":
             diagnostics = self.manager.list

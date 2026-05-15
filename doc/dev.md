@@ -35,6 +35,8 @@ This part can be ommited, if you handle by yourself what to do with the manager.
 
 The real thing starts with the instanciation of your own DiagnosticManager.
 
+**The report is generated all along the execution. It is handled by a classical logger. This logger is setup by the Diagonal object. If you don't use Diagonal, you will have to setup your own logger handlers.**
+
 # DiagnosticManager
 
 ## Declaration

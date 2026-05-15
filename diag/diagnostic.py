@@ -1,14 +1,21 @@
+"""Diagnostic class. Inherit this class to implement a new Diagnostic."""
+
 from diag.errors import *
-
-import logging
-
-
 class Diagnostic:
     manager = None
     log_levels = ["debug", "info", "warning", "error", "fatal"]
 
     @staticmethod
     def set_manager(manager):
+        """Set the manager for the Diagnostic class."""
+        if Diagnostic.manager is not None:
+            return
+
+        if manager is None:
+            raise DiagnosticError(DIAGNOSTIC_INVALID_NONE_MANAGER)
+
+        # Restrictions on circular imports;
+        # we cannot import the manager at the top of the file, we can't do too much tests.
         Diagnostic.manager = manager
 
     def __init__(self):

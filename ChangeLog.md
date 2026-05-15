@@ -20,10 +20,10 @@
 - [x] DiagnosticManager.store became the unique storing source
 - [x] Externalize errors in diag.errors file
 - [x] Uniformize the way add logs everywhere
-- [ ] Update documentation
-    - [ ] Update sources doc
-    - [ ] Update user doc
-    - [ ] Update dev doc
+- [x] Update documentation
+    - [x] Update sources doc
+    - [x] Update user doc
+    - [x] Update dev doc
 - [ ] Setup unit tests
     - [x] unit tests on Diagonal
     - [ ] unit tests on DiagnosticManager

@@ -26,3 +26,4 @@ MANAGER_INVALID_EMPTY_INSTANCE = "Invalid diagnostic instance : empty"
 MANAGER_INVALID_TYPE_INSTANCE = "Invalid diagnostic instance : not Diagnostic"
 
 DIAGNOSTIC_MANAGER_NOT_SET = "DiagnosticManager not set"
+DIAGNOSTIC_INVALID_NONE_MANAGER = "Invalid manager : None"

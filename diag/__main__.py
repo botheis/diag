@@ -2,7 +2,6 @@ import os, sys
 
 import diag.utils as utils
 from diag.diagonal import Diagonal
-# from diag.diagnosticManager import DiagnosticManager
 from diag.manager import DiagnosticManager
 from diag.diagnostic import Diagnostic
 
@@ -10,8 +9,20 @@ from diag.diagnostic import Diagnostic
 if __name__ == "__main__":
 
     # Diagonal
-    #   - arguments: args api: add, parse, run the 
+    #
+    # === launcher - handle arguments and link the manager.
+    #
+    #   - arguments: args api: add, parse, execute
     #   - manager : diagnostic api: load, run, stop diagnostics
+
+    # Manager
+    #
+    # === manager - handle diagnostics, run dependencies (once), store context, and report.
+    #
+    #   - diagnostics: list of diagnostics-
+    #   - load diagnostics: from path, from name, from class
+    #   - run diagnostics: by name, by class, all
+
     manager = DiagnosticManager()
     # Link all the diagnostics to the manager
     Diagnostic.set_manager(manager)
