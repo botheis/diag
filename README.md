@@ -1,12 +1,25 @@
-diag
+Diag
 ===
 
-Because to do support is boring me a lot, I created this tool to help me to automate diagnostics and functional tests.
+Because to do support is annoying me a lot, I created this tool to help me to automate diagnostics and functional tests.
 
 # Basically what is diag?
 
-Diag is a python package. the diag directory goes into your /path/to/your/python/site-packages.
+Diag is a standalone python package. After downloading it, you can use it as an external python module:
+```python
+# You must be on the /path/to/diag
+python3 -m diag [args]
+```
+Diag is also a python package. You can use it inside your own project.
 
+```python
+from diag.errors import *
+from diag.diagonal import Diagonal
+from diag.manager import DiagnosticManager
+from diag.diagnostic import Diagnostic
+
+# Things to do with each element of the module.
+```
 
 # How to get diag ?
 
@@ -15,10 +28,9 @@ For now diag is available only on github through this repository:
 ```bash
 # Clone the repo
 git clone git@github.com:botheis/diag.git
-# cp -r diag /path/to/your/python-env/site-packages/
 
-# Copy the project on global Debian dist-packages:
-cp -r diag/diag /usr/lib/python3/dist-packages/
+# Copy the python module into your python env.
+# cp -r diag /path/to/your/python-env/site-packages/
 ```
 
 # How it works ?
@@ -37,19 +49,21 @@ Probably yes ! If it can help you, here is my original user case:
 - The solution includes
     - A main server,
     - 0 to n secondary relay servers
-    - n clients connected to the secondary relay servers.
+    - n agents-clients connected to the secondary relay servers.
 - The access to the customer environment is quite hectic:
-    - In best case, we have ssh access
-    - In middle case, a colleague has access a unique access to the environment
-    - In worst case, we have no access to the environment.
-- Most of the time, the problem is not a code issue but a configuration issue (I suck in sysadmin/network).
+    - In best case, we have a ssh access
+    - In middle case, a colleague has a unique access to the environment
+    - In worst case, we have no access at all to the environment.
+- Most of the time, the problem is not a code issue but a configuration issue... And I suck in sysadmin/network. So if normalized tests can be run to eliminate trivial tests. Or at best fix inconsistencies on config. It could be a great help for me.
 
-Furthermore the customer doesn't always know how to express the issue.
+On top of all that, the customer doesn't always know how to express the issue. So it ends up with this "thing" did this, this "stuff" did that...
 ```
 
 So what can we do in this case ?
-- Pray
-- Send a mail to the customer asking him to run commands, return the results and so on. From this, we try to understand and reproduce the issue in our dev environment.
+- Pray (almost not exegerating)
+- Send a mail to the customer asking him to run commands, return the results and so on.
+
+From this, we try to understand and reproduce the issue in our dev environment.
 
 ... I hate that ...
 
@@ -68,7 +82,7 @@ On the other hand, a diagnostic can be more complexe:
 - Get the list of servers from sql database.
     - On each server, check if the config file exists and is correct.
     - On each server, try to connect with ssh (or other)
-    - On each server, check if the port is open, it the service is running ...
+    - On each server, check if the port is open, if the service is running ...
 
 Because I'm lazy, I want to make sure all my "checklists" are executed in a consistent way. It can reduce the time I spend on finding the right information.
 

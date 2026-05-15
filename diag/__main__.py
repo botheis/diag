@@ -23,5 +23,4 @@ if __name__ == "__main__":
     diagonal.add_argument("--diag", type=str, help="Specify the diagnostic path (directory) to load. If not specified, it will load all diagnostics in the diagnostic folder.")
     diagonal.add_argument("--report", type=str, help="Specify the report path (file) to save the report. If not specified, it will be saved in /var/log/diag.log.")
 
-
     sys.exit(diagonal._exec)
